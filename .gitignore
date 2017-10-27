@@ -1,2 +1,4 @@
 *.pyc
 00*
+.ropeproject/
+db*
