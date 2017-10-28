@@ -39,18 +39,18 @@ $ python manage.py runserver
 
 * List of products
 ```
-$ curl http://127.0.0.1:8000/products/ | json_pp 
+$ curl http://127.0.0.1:8000/products/ | json_pp
 
 [
    {
-      "summary" : "Best package under 2000",
+      "price" : 5500,
       "title" : "Ross Island + North Bay",
-      "price" : 1800
+      "summary" : "Have fun with family"
    },
    {
-      "summary" : "Best package under 4000",
       "title" : "Discover Scuba",
-      "price" : 3800
+      "price" : 2800,
+      "summary" : "Best package under 3000"
    }
 ]
 ```
@@ -58,29 +58,31 @@ $ curl http://127.0.0.1:8000/products/ | json_pp
 * Detail of single product
 ```
 $ curl http://127.0.0.1:8000/products/1/ | json_pp
+
 {
-   "age_requirement" : "below 18 are not allowed",
-   "food" : "Breakfast + Lunch + Dinner",
-   "id" : 1,
-   "price" : 1800,
-   "about_vendor" : "Ocean tribe with full of fun",
-   "duration" : "3 hours",
-   "medical_requirement" : "yes",
-   "title" : "Ross Island + North Bay",
+   "summary" : "Have fun with family",
    "about_activity" : "Ocean tribe...",
-   "other_facilities" : "Rain Dance + Disco",
-   "summary" : "Best package under 2000"
+   "price" : 5500,
+   "duration" : "3 hours",
+   "medical_requirement" : "Yes",
+   "age_requirement" : "Below 18 are not allowed",
+   "title" : "Ross Island + North Bay",
+   "food" : "Breakfast + Dinner",
+   "about_vendor" : "have lot of activites to do...",
+   "other_facilities" : "Swimming, Boating & Hotel are included",
+   "id" : 1
 }
+
 ```
 
 * Create new product
 ```
- $ curl -H "Content-Type: application/json" -X POST -d '{"title":"Boating + Hotel", "age_requirement":"no specification", "summary":"Have fun with family", "price":4500, "food":"Breakfast + Dinner", "about_activity":"Ocean tribe...", "about_vendro":"ocean tribe is ...."}' http://127.0.0.1:8000/products/
+$ curl -H "Content-Type: application/json" -X POST -d '{"title":"Discover new world", "age_requirement":"min 18", "summary":"Best package under 4000", "price":3800, "food":"Breakfast + Dinner", "about_activity":"Ocean tribe...", "about_vendro":"ocean tribe is ...."}' http://127.0.0.1:8000/products/
 ```
 
 * update existing product
 ```
-$ curl -H "Content-Type: application/json" -X PUT -d '{"title":"updated title", "summary":"updated summary", "price":"updated price"}' http://127.0.0.1:8000/products/4/ 
+$ curl -H "Content-Type: application/json" -X PUT -d '{"medical_requirement":"Yes", "price":5500, "title":"Ross Island + North Bay"}' http://127.0.0.1:8000/products/3/
 ```
 
 # Ticket booking examples
@@ -88,47 +90,43 @@ $ curl -H "Content-Type: application/json" -X PUT -d '{"title":"updated title", 
 * List of booked ticket
 ```
 $ curl http://127.0.0.1:8000/bookticket/ | json_pp
+
 [
    {
+      "travellers" : [
+         {
+            "passport" : 123456789,
+            "name" : "amit",
+            "age" : 12,
+            "nationality" : "Indian",
+            "title" : "MR"
+         },
+         {
+            "nationality" : "Indian",
+            "title" : "MR",
+            "passport" : 12345,
+            "name" : "vivek",
+            "age" : 22
+         }
+      ],
       "product" : {
-         "summary" : "Best package under 4000",
-         "price" : 3800,
-         "title" : "Discover Scuba"
-      },
-      "first_name" : "lokesh",
-      "title" : "Mr",
-      "id" : 1,
-      "nationality" : "Indian",
-      "contact_info" : {
-         "name" : "rishi",
-         "ph_number" : 1245645,
-         "email" : "rksbtp@gmail.com"
-      },
-      "last_name" : "",
-      "age" : 25
-   },
-   {
-      "last_name" : "",
-      "age" : 20,
-      "title" : "Mr",
-      "product" : {
+         "price" : 5500,
          "title" : "Ross Island + North Bay",
-         "price" : 1800,
-         "summary" : "Best package under 2000"
+         "summary" : "Have fun with family"
       },
-      "first_name" : "Amit",
+      "id" : 1,
       "contact_info" : {
          "email" : "rksbtp@gmail.com",
-         "name" : "rishi",
-         "ph_number" : 1245645
-      },
-      "nationality" : "Indian",
-      "id" : 2
+         "ph_no" : 1245645,
+         "name" : "rishik",
+         "title" : "Mr"
+      }
    }
 ]
+
 ```
 
 * book new ticket
 ```
-$ curl -H "Content-Type: application/json" -X POST -d '{"contact":"{\"name\":\"rishi\", \"ph_no\":1245645, \"email\":\"rksbtp@gmail.com\", \"title\":\"Mr\"}", "title":"Mr", "first_name":"Rohit", "product":1, "age":20}' http://127.0.0.1:8000/bookticket/
+$ curl -H "Content-Type: application/json" -X POST -d '{"contact":"{\"name\":\"ravi\", \"ph_no\":1245645, \"email\":\"rkp1986@gmail.com\", \"title\":\"Mr\"}", "travellers":"[{\"title\":\"MR\", \"name\":\"mukesh\", \"age\":15, \"nationality\":\"Indian\", \"passport\":123456789 }, {\"title\":\"MR\", \"name\":\"rakesh\", \"age\":22, \"nationality\":\"Indian\", \"passport\":12345 }]",  "product":2, "age":20}' http://127.0.0.1:8000/bookticket/ 
 ```
