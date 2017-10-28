@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from products.models import Product, Traveller, TravellerContactInfo
+from products.models import Product, Ticket, TravellerContactInfo, TravellersInfo
 
 
 class ProductDetailSerializer(serializers.ModelSerializer):
@@ -18,13 +18,26 @@ class ProductSerializer(serializers.ModelSerializer):
 class TravellerContactSerializer(serializers.ModelSerializer):
     class Meta:
         model = TravellerContactInfo
-        fields = ('name', 'email', 'ph_number')
+        fields = ('title', 'name', 'email', 'ph_no')
 
 
-class TravellerSerializer(serializers.ModelSerializer):
+class TravellersInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TravellersInfo
+        fields = ('title', 'name', 'age', 'nationality', 'passport')
+
+
+class TicketSerializer(serializers.ModelSerializer):
     product = ProductSerializer(read_only=True)
     contact_info = TravellerContactSerializer(read_only=True)
+    travellers = serializers.SerializerMethodField()
 
     class Meta:
-        model = Traveller
-        fields = ('id', 'title', 'first_name', 'last_name', 'age', 'nationality', 'product', 'contact_info')
+        model = Ticket
+        fields = ('id', 'product', 'contact_info', 'travellers')
+
+    def get_travellers(self, obj):
+        travellers = obj.travellers.all()
+        serializer = TravellersInfoSerializer(travellers, many=True)
+        return serializer.data
+

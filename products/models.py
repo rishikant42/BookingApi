@@ -23,21 +23,25 @@ class Product(models.Model):
 class TravellerContactInfo(models.Model):
     title = models.CharField(max_length=3)
     name = models.CharField(max_length=20)
-    ph_number = models.IntegerField()
+    ph_no = models.IntegerField()
     email = models.EmailField()
 
     def __str__(self):
-        return self.first_name
+        return self.name
 
 
-class Traveller(models.Model):
+class TravellersInfo(models.Model):
     title = models.CharField(max_length=3)
-    first_name = models.CharField(max_length=20)
-    last_name = models.CharField(max_length=20, blank=True, default='')
+    name = models.CharField(max_length=20)
     age = models.IntegerField()
     nationality = models.CharField(max_length=20, default='Indian')
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    contact_info = models.ForeignKey(TravellerContactInfo, on_delete=models.CASCADE)
+    passport = models.IntegerField(blank=True, null=True)
 
     def __str__(self):
-        return self.first_name
+        return self.name
+
+
+class Ticket(models.Model):
+    travellers = models.ManyToManyField(TravellersInfo)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    contact_info = models.ForeignKey(TravellerContactInfo, on_delete=models.CASCADE)

@@ -8,8 +8,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
-from products.models import Product, Traveller, TravellerContactInfo
-from products.serializers import ProductDetailSerializer, ProductSerializer, TravellerSerializer
+from products.models import Product, Ticket, TravellerContactInfo
+from products.serializers import ProductDetailSerializer, ProductSerializer, TicketSerializer, TravellerContactSerializer, TravellersInfoSerializer
 # Create your views here.
 
 
@@ -60,34 +60,37 @@ class BookTicket(APIView):
     """
 
     def save_contact_info(self, information):
-        info = literal_eval(information)
+        data = literal_eval(information)
+        serializer = TravellerContactSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return serializer.instance
 
-        title = info.get('title')
-        name = info.get('name')
-        ph_no = info.get('ph_no')
-        email = info.get('email')
-
-        contact_obj = TravellerContactInfo(title=title, name=name, ph_number=ph_no, email=email)
-        contact_obj.save()
-        return contact_obj
+    def save_travellers_info(self, information):
+        data = literal_eval(information)
+        serializer = TravellersInfoSerializer(data=data, many=True)
+        if serializer.is_valid():
+            serializer.save()
+            return serializer.instance
 
     def get(self, request):
-        traveller = Traveller.objects.all()
-        serializer = TravellerSerializer(traveller, many=True)
+        traveller = Ticket.objects.all()
+        serializer = TicketSerializer(traveller, many=True)
         return Response(serializer.data)
 
     def post(self, request):
-        title = request.data.get('title')
-        fname = request.data.get('first_name')
-        lname = request.data.get('last_name', '')
-        age = request.data.get('age')
-        nationality = request.data.get('nationality', 'Indian')
         product = request.data.get('product')
+
+        travellers_info = request.data.get('travellers')
+        travellers_obj = self.save_travellers_info(travellers_info)
 
         contact_info = request.data.get('contact')
         contact_obj = self.save_contact_info(contact_info)
 
-        traveller = Traveller(title=title, first_name=fname, last_name=lname, age=age, nationality=nationality, product_id=product, contact_info=contact_obj)
-        traveller.save()
-        serializer = TravellerSerializer(traveller)
+        ticket = Ticket(product_id=product, contact_info=contact_obj)
+        ticket.save()
+        for traveller in travellers_obj:
+            ticket.travellers.add(traveller)
+
+        serializer = TicketSerializer(ticket)
         return Response(serializer.data)
