@@ -93,34 +93,34 @@ $ curl http://127.0.0.1:8000/bookticket/ | json_pp
 
 [
    {
-      "travellers" : [
-         {
-            "passport" : 123456789,
-            "name" : "amit",
-            "age" : 12,
-            "nationality" : "Indian",
-            "title" : "MR"
-         },
-         {
-            "nationality" : "Indian",
-            "title" : "MR",
-            "passport" : 12345,
-            "name" : "vivek",
-            "age" : 22
-         }
-      ],
       "product" : {
          "price" : 5500,
          "title" : "Ross Island + North Bay",
          "summary" : "Have fun with family"
       },
-      "id" : 1,
       "contact_info" : {
-         "email" : "rksbtp@gmail.com",
+         "name" : "ravi",
          "ph_no" : 1245645,
-         "name" : "rishik",
+         "email" : "rkp1986@gmail.com",
          "title" : "Mr"
-      }
+      },
+      "id" : 2,
+      "travellers" : [
+         {
+            "name" : "mukesh",
+            "nationality" : "Indian",
+            "title" : "MR",
+            "passport" : 123456789,
+            "age" : 15
+         },
+         {
+            "passport" : 12345,
+            "title" : "MR",
+            "age" : 22,
+            "name" : "rakesh",
+            "nationality" : "Indian"
+         }
+      ]
    }
 ]
 
@@ -128,5 +128,5 @@ $ curl http://127.0.0.1:8000/bookticket/ | json_pp
 
 * book new ticket
 ```
-$ curl -H "Content-Type: application/json" -X POST -d '{"contact":"{\"name\":\"ravi\", \"ph_no\":1245645, \"email\":\"rkp1986@gmail.com\", \"title\":\"Mr\"}", "travellers":"[{\"title\":\"MR\", \"name\":\"mukesh\", \"age\":15, \"nationality\":\"Indian\", \"passport\":123456789 }, {\"title\":\"MR\", \"name\":\"rakesh\", \"age\":22, \"nationality\":\"Indian\", \"passport\":12345 }]",  "product":2, "age":20}' http://127.0.0.1:8000/bookticket/ 
+$ curl -H "Content-Type: application/json" -X POST -d '{"contact": {"name":"ravikant", "ph_no":1245645, "email":"rkp1986@gmail.com", "title":"Mr"}, "travellers":[{"title":"MR", "name":"rohit", "age":15, "nationality":"Indian", "passport":1234567 }, {"title":"MR", "name":"abhishek", "age":42, "nationality":"Indian", "passport":123468 }],  "product_id":1}' http://127.0.0.1:8000/bookticket/
 ```
