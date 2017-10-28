@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from ast import literal_eval
-
 from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -60,15 +58,13 @@ class BookTicket(APIView):
     """
 
     def save_contact_info(self, information):
-        data = literal_eval(information)
-        serializer = TravellerContactSerializer(data=data)
+        serializer = TravellerContactSerializer(data=information)
         if serializer.is_valid():
             serializer.save()
             return serializer.instance
 
     def save_travellers_info(self, information):
-        data = literal_eval(information)
-        serializer = TravellersInfoSerializer(data=data, many=True)
+        serializer = TravellersInfoSerializer(data=information, many=True)
         if serializer.is_valid():
             serializer.save()
             return serializer.instance
@@ -79,7 +75,7 @@ class BookTicket(APIView):
         return Response(serializer.data)
 
     def post(self, request):
-        product = request.data.get('product')
+        product_id = request.data.get('product_id')
 
         travellers_info = request.data.get('travellers')
         travellers_obj = self.save_travellers_info(travellers_info)
@@ -87,7 +83,7 @@ class BookTicket(APIView):
         contact_info = request.data.get('contact')
         contact_obj = self.save_contact_info(contact_info)
 
-        ticket = Ticket(product_id=product, contact_info=contact_obj)
+        ticket = Ticket(product_id=product_id, contact_info=contact_obj)
         ticket.save()
         for traveller in travellers_obj:
             ticket.travellers.add(traveller)
